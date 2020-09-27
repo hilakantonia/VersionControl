@@ -121,6 +121,6 @@
     <value>Teljes Név</value>
   </data>
   <data name="Write" xml:space="preserve">
-    <value>Kiír</value>
+    <value>Fájlba írás</value>
   </data>
 </root>

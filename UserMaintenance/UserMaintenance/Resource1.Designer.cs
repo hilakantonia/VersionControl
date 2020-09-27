@@ -70,7 +70,7 @@ namespace UserMaintenance {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kiír.
+        ///   Looks up a localized string similar to Fájlba írás.
         /// </summary>
         internal static string Write {
             get {
