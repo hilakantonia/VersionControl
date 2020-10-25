@@ -8,7 +8,7 @@ namespace mikroszimulacio.Entities
 {
     public class Birthprobability
     {
-        public int BirthYear { get; set; }
+        public int Age { get; set; }
         public int NbrOfChildren { get; set; }
         public double P { get; set; }
     }

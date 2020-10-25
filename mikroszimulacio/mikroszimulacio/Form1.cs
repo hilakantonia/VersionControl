@@ -15,12 +15,14 @@ namespace mikroszimulacio
     public partial class Form1 : Form
     {
         Random rng = new Random(1234);
+
+        List<Person> Population = new List<Person>();
+        List<Birthprobability> BirthProbabilities = new List<Birthprobability>();
+        List<DeathProbability> DeathProbabilities = new List<DeathProbability>();
         public Form1()
         {
             InitializeComponent();
-            List<Person> Population = new List<Person>();
-            List<Birthprobability> BirthProbabilities = new List<Birthprobability>();
-            List<DeathProbability> DeathProbabilities = new List<DeathProbability>();
+            
 
             Population = GetPopulation(@"C:\Temp\nép.csv");
             BirthProbabilities = GetBirthProbabilities(@"C:\Temp\születés.csv");
@@ -28,10 +30,10 @@ namespace mikroszimulacio
 
             for (int year = 2005; year <= 2024; year++)
             {
-               
+
                 for (int i = 0; i < Population.Count; i++)
                 {
-                    // Ide jön a szimulációs lépés
+                    SimStep(year, Population[i]) ;
                 }
 
                 int nbrOfMales = (from x in Population
@@ -44,7 +46,45 @@ namespace mikroszimulacio
                     string.Format("Év:{0} Fiúk:{1} Lányok:{2}", year, nbrOfMales, nbrOfFemales));
 
             }
-        }
+            }
+
+            private void SimStep(int year, Person person)
+            {
+                
+                if (!person.IsAlive) return;
+
+                
+                byte age = (byte)(year - person.BirthYear);
+
+                
+                double pDeath = (from x in DeathProbabilities
+                                 where x.Gender == person.Gender && x.Age == age
+                                 select x.P).FirstOrDefault();
+                
+                if (rng.NextDouble() <= pDeath)
+                    person.IsAlive = false;
+
+                
+                if (person.IsAlive && person.Gender == Gender.Female)
+                {
+                    
+                    double pBirth = (from x in BirthProbabilities
+                                     where x.Age == age
+                                     select x.P).FirstOrDefault();
+                    
+                    if (rng.NextDouble() <= pBirth)
+                    {
+                        Person újszülött = new Person();
+                        újszülött.BirthYear = year;
+                        újszülött.NbrOfChildren = 0;
+                        újszülött.Gender = (Gender)(rng.Next(1, 3));
+                        Population.Add(újszülött);
+                    }
+                }
+            }
+
+
+        
 
             public List<Person> GetPopulation(string csvpath)
             {
@@ -77,7 +117,7 @@ namespace mikroszimulacio
                         var line = sr.ReadLine().Split(';');
                         population2.Add(new Birthprobability()
                         {
-                            BirthYear = int.Parse(line[0]),
+                            Age = int.Parse(line[0]),
                             NbrOfChildren = int.Parse(line[1]),
                             P = double.Parse(line[2])
                         });
@@ -98,7 +138,7 @@ namespace mikroszimulacio
                         population3.Add(new DeathProbability()
                         {
                             Gender = (Gender)Enum.Parse(typeof(Gender), line[0]),
-                            BirthYear = int.Parse(line[1]),
+                            Age = int.Parse(line[1]),
                             P = double.Parse(line[2])
                         });
                     }
@@ -107,7 +147,8 @@ namespace mikroszimulacio
                 return population3;
             }
 
-           
+            
+        
     }
 }
 
