@@ -87,6 +87,6 @@ namespace mikroszimulacio
             return population3;
         }
 
-
+        Random rng = new Random(1234);
     }
 }
