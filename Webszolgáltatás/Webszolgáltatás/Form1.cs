@@ -17,6 +17,7 @@ namespace Webszolgáltatás
     public partial class Form1 : Form
     {
         BindingList<RateData> Rates = new BindingList<RateData>();
+        BindingList<string> Currencies = new BindingList<string>();
 
         public Form1()
         {
@@ -31,6 +32,7 @@ namespace Webszolgáltatás
             Rates.Clear();
 
             dataGridView1.DataSource = Rates;
+            comboBox1.DataSource = Currencies;
 
             XMLfeldolg();
         }
